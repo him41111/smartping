@@ -10,11 +10,11 @@ import (
 	"time"
 
 	"github.com/cihub/seelog"
+	"github.com/him41111/smartping/src/funcs"
+	"github.com/him41111/smartping/src/g"
+	"github.com/him41111/smartping/src/http"
+	"github.com/him41111/smartping/src/kv"
 	"github.com/jakecoffman/cron"
-	"github.com/smartping/smartping/src/funcs"
-	"github.com/smartping/smartping/src/g"
-	"github.com/smartping/smartping/src/http"
-	"github.com/smartping/smartping/src/kv"
 	//"sync"
 )
 

@@ -1,4 +1,4 @@
-module github.com/smartping/smartping/src
+module github.com/him41111/smartping/src
 
 go 1.18
 

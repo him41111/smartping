@@ -11,9 +11,9 @@ import (
 	"time"
 
 	"github.com/cihub/seelog"
+	"github.com/him41111/smartping/src/g"
+	"github.com/him41111/smartping/src/nettools"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/smartping/smartping/src/g"
-	"github.com/smartping/smartping/src/nettools"
 )
 
 func MonitorDomain() {
@@ -39,11 +39,11 @@ func MonitorDomain() {
 					networkMember := g.Cfg.Network[networkey]
 					if networkvalue.Smartping {
 						selfpingslice := g.Cfg.Network[networkey].Ping
-				                selfpingtopology := g.Cfg.Network[networkey].Topology
-                                                newpingslice := make([]string,len(selfpingslice))
-                                                newpingtopology := make([]map[string]string,len(selfpingtopology))
-                                                copy(newpingslice,selfpingslice)
-                                                copy(newpingtopology,selfpingtopology)
+						selfpingtopology := g.Cfg.Network[networkey].Topology
+						newpingslice := make([]string, len(selfpingslice))
+						newpingtopology := make([]map[string]string, len(selfpingtopology))
+						copy(newpingslice, selfpingslice)
+						copy(newpingtopology, selfpingtopology)
 
 						for _, ipline := range addslice { //增加的
 							if !CheckIsIn(selfpingslice, ipline) {
@@ -58,10 +58,10 @@ func MonitorDomain() {
 							seelog.Info(fmt.Sprintf("[func:Monitor_Domain] %s selfpingtopology add %s", networkey, ipline))
 
 						}
-                                                networkMember.Ping = newpingslice
-                                                networkMember.Topology = newpingtopology
-                                                g.SelfCfg = networkMember
-                                                g.Cfg.Network[networkey] = g.SelfCfg
+						networkMember.Ping = newpingslice
+						networkMember.Topology = newpingtopology
+						g.SelfCfg = networkMember
+						g.Cfg.Network[networkey] = g.SelfCfg
 					}
 				}
 				for _, ipline := range addslice { //增加的
@@ -240,7 +240,7 @@ func DnsResolve(domain string, count int) []string {
 				domainipslice = append(domainipslice, domainbeforestr+"-"+strings.TrimSpace(eveip))
 			}
 		}
-		seelog.Info(fmt.Sprintf("domain %s ",domain), domainipslice)
+		seelog.Info(fmt.Sprintf("domain %s ", domain), domainipslice)
 		return domainipslice
 	} else if count > 2 {
 		seelog.Info(domain, "domain resolve failed a")
@@ -249,7 +249,7 @@ func DnsResolve(domain string, count int) []string {
 	return []string{}
 }
 
-//该函数的作用是去重
+// 该函数的作用是去重
 func RemoveIsIntSlice(sourceslice *[]string) []string {
 	sort.Strings(*sourceslice)
 	left, right := 0, 1
@@ -280,7 +280,7 @@ func Ping() {
 		}
 	}
 	ipslice = RemoveIsIntSlice(&ipslice)
-	seelog.Info(fmt.Sprintf("all ip: %v",ipslice))
+	seelog.Info(fmt.Sprintf("all ip: %v", ipslice))
 
 	for _, iptarget := range ipslice {
 		wg.Add(1)
@@ -293,20 +293,20 @@ func Ping() {
 }
 
 func StringIsInSlice(slicename []string, str string) bool {
-        sort.Strings(slicename)
-        left,right:=0,len(slicename)-1
+	sort.Strings(slicename)
+	left, right := 0, len(slicename)-1
 
-        for left <= right {
-            middle:=(left+right)/2
-            if slicename[middle]==str{
-                return true
-            }else if slicename[middle]<str{
-                left=middle+1
-            }else if slicename[middle]>str{
-                right=middle-1
-            }
-        }
-        return false
+	for left <= right {
+		middle := (left + right) / 2
+		if slicename[middle] == str {
+			return true
+		} else if slicename[middle] < str {
+			left = middle + 1
+		} else if slicename[middle] > str {
+			right = middle - 1
+		}
+	}
+	return false
 }
 
 func Backslicesum(slicename []float64) float64 {
@@ -317,7 +317,7 @@ func Backslicesum(slicename []float64) float64 {
 	return fsum
 }
 
-//ping main function
+// ping main function
 func PingTask(ipvalue string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	var iptarget string
@@ -374,7 +374,7 @@ func PingTask(ipvalue string, wg *sync.WaitGroup) {
 	seelog.Info("Finish Ping " + t.Addr + "..")
 }
 
-//storage ping data
+// storage ping data
 func PingStorage(pingres g.PingSt, Addr string) {
 	logtime := time.Now().Format("2006-01-02 15:04")
 	seelog.Info("[func:StartPing] ", "(", logtime, ")Starting PingStorage ", Addr)

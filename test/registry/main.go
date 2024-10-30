@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/cihub/seelog"
-	"github.com/smartping/smartping/src/kv"
+	"github.com/him41111/smartping/src/kv"
 )
 
 var consulEndpoint string = "10.93.10.66:80"

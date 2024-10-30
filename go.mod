@@ -1,4 +1,4 @@
-module github.com/smartping/smartping
+module github.com/him41111/smartping
 
 go 1.14
 

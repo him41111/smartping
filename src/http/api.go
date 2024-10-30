@@ -13,9 +13,9 @@ import (
 	"time"
 
 	"github.com/cihub/seelog"
-	"github.com/smartping/smartping/src/funcs"
-	"github.com/smartping/smartping/src/g"
-	"github.com/smartping/smartping/src/nettools"
+	"github.com/him41111/smartping/src/funcs"
+	"github.com/him41111/smartping/src/g"
+	"github.com/him41111/smartping/src/nettools"
 	"github.com/wcharczuk/go-chart"
 	"github.com/wcharczuk/go-chart/drawing"
 )

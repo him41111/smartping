@@ -1,6 +1,6 @@
 package main
 
-import "github.com/smartping/smartping/src/g"
+import "github.com/him41111/smartping/src/g"
 
 var consulEndpoint string = "10.93.10.66:80"
 
