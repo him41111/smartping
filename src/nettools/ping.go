@@ -125,3 +125,77 @@ func RunPing(IpAddr *net.IPAddr, maxrtt time.Duration, maxttl int, seq int) (flo
 	pingRsult := res.Send(maxttl)
 	return float64(pingRsult.RTT.Nanoseconds()) / 1e6, pingRsult.Error
 }
+
+func CheckSum(data []byte) (rt uint16) {
+	var (
+		sum    uint32
+		length int = len(data)
+		index  int
+	)
+	for length > 1 {
+		sum += uint32(data[index])<<8 + uint32(data[index+1])
+		index += 2
+		length -= 2
+	}
+	if length > 0 {
+		sum += uint32(data[index]) << 8
+	}
+	rt = uint16(sum) + uint16(sum>>16)
+
+	return ^rt
+}
+
+type SICMP struct {
+	Type        uint8
+	Code        uint8
+	Checksum    uint16
+	Identifier  uint16
+	SequenceNum uint16
+}
+
+var (
+	originBytes []byte
+)
+
+func ShellRunPing(raddr *net.IPAddr, maxrtt time.Duration, PS int, seq uint16) (float64, error) {
+	var (
+		sicmp SICMP
+		laddr = net.IPAddr{IP: net.ParseIP("0.0.0.0")} // 得到本机的IP地址结构
+	)
+
+	// 返回一个 ip socket
+	conn, err := net.DialIP("ip4:icmp", &laddr, raddr)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return 0.0, err
+	}
+
+	defer conn.Close()
+
+	// 初始化 icmp 报文
+	sicmp = SICMP{8, 0, 0, 0, seq}
+
+	var buffer bytes.Buffer
+        fmt.Println(raddr,originBytes)
+	binary.Write(&buffer, binary.BigEndian, sicmp)
+	binary.Write(&buffer, binary.BigEndian, originBytes[0:PS])
+	b := buffer.Bytes()
+	binary.BigEndian.PutUint16(b[2:], CheckSum(b))
+
+	recv := make([]byte, 1024)
+
+	if _, err := conn.Write(buffer.Bytes()); err != nil {
+		return 0.0, err
+	}
+	// 否则记录当前得时间
+	t_start := time.Now()
+	conn.SetReadDeadline((time.Now().Add(maxrtt)))
+	_, err = conn.Read(recv)
+	if err != nil {
+		return 0.0, err
+	}
+	t_end := time.Now()
+	dur := float64(t_end.Sub(t_start).Nanoseconds()) / 1e6
+	return dur, nil
+}
